@@ -1,14 +1,14 @@
 package projeto.ingles.utils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import org.springframework.stereotype.Component;
 import lombok.extern.log4j.Log4j2;
+import projeto.ingles.config.AudioStorageConfig;
 import projeto.ingles.config.ProcessConfig;
-import projeto.ingles.model.interfaces.AudioFilesUtilities;
 import projeto.ingles.model.interfaces.Downloader;
 
 @Component
@@ -17,16 +17,20 @@ public class YtdlpDownloader implements Downloader {
 
     private final BufferCleaner bufferCleaner;
     private final ComandBuilder comandBuilder;
+    private final AudioStorageConfig audioStorageConfig;
 
-    public YtdlpDownloader(BufferCleaner bufferCleaner, ComandBuilder comandBuilder) {
+    public YtdlpDownloader(BufferCleaner bufferCleaner, ComandBuilder comandBuilder, AudioStorageConfig audioStorageConfig) {
         this.bufferCleaner = bufferCleaner;
         this.comandBuilder = comandBuilder;
+        this.audioStorageConfig = audioStorageConfig;
     }
 
     @Override
     public void downloadAudio(String videoUrl){
+        Path outputDir = audioStorageConfig.getResolvedPath();
         ProcessConfig config = ProcessConfig.builder()
-            .command(buildYtdlpComand(videoUrl))
+            .command(buildYtdlpComand(videoUrl, outputDir))
+            .workingDirectory(outputDir)
             .build();
         try {
             Process process = comandBuilder.startComand(config);
@@ -67,12 +71,14 @@ public class YtdlpDownloader implements Downloader {
         }
     }
     
-    private List<String> buildYtdlpComand(String videoUrl){
+    private List<String> buildYtdlpComand(String videoUrl, Path outputDir) {
         List<String> cmd = new LinkedList<>();
         cmd.add("yt-dlp");
         cmd.add("-x");
         cmd.add("--audio-format");
         cmd.add("mp3");
+        cmd.add("-o");
+        cmd.add(outputDir.resolve("%(title)s.%(ext)s").toString());
         cmd.add(videoUrl);
         return cmd;
     }

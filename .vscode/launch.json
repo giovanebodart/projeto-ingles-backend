@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-InglesApplication<ingles>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "projeto.ingles.InglesApplication",
+            "projectName": "ingles",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

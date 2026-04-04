@@ -44,7 +44,8 @@ public class TranscribeProcessController {
         transformer.transformAudioFormat(MP3_FORMAT);
         audioUtilities.removeAudio(MP3_FORMAT);
         String text = transcriber.transcribeAudio(WAV_FORMAT);
-        List<String> treatedText = textUtilities.treatText(text);
-        return lemmaFilter.filter(1L, textAnalyser.analyzeText(treatedText).results());
+        // List<String> treatedText = textUtilities.treatText(text);
+        // return lemmaFilter.filter(1L, textAnalyser.analyzeText(treatedText).results());
+        return null;
     }
 }

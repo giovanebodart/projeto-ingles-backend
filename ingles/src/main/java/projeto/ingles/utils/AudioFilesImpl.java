@@ -7,15 +7,22 @@ import java.util.stream.Stream;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.log4j.Log4j2;
+import projeto.ingles.config.AudioStorageConfig;
 import projeto.ingles.model.interfaces.AudioFilesUtilities;
 
 @Component
 @Log4j2
 public class AudioFilesImpl implements AudioFilesUtilities{
+
+    private final AudioStorageConfig audioStorageConfig;
+
+    public AudioFilesImpl(AudioStorageConfig audioStorageConfig) {
+        this.audioStorageConfig = audioStorageConfig;
+    }
     
     @Override
     public Path getAudioFile(String audioFormat) {
-    Path storagePath = Path.of("storage\\audios");
+    Path storagePath = audioStorageConfig.getResolvedPath();
         Path audioPath = null;
         try(Stream<Path> files = Files.list(storagePath)){
             audioPath = files

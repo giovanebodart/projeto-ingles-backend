@@ -1,6 +1,7 @@
 package projeto.ingles.model.service;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -32,15 +33,15 @@ public class WhisperTranscriber implements Transcriber{
 
     @Override
     public String transcribeAudio(String audioFormat) {
-        log.atInfo().log("Transcription started"); 
+        log.atInfo().log("Transcriçao iniciada"); 
+        ProcessConfig config = ProcessConfig.builder()
+            .command(buildWhisperComand(audioFormat, audioFilesUtilities.getAudioFile(audioFormat)))
+            .workingDirectory(whisperConfig.getExecutablePath())
+            .build();
         long startTime = System.currentTimeMillis();
         try{  
             StringBuilder outputBuilder = new StringBuilder();
             StringBuilder errorBuilder = new StringBuilder();
-            ProcessConfig config = ProcessConfig.builder()
-                .command(buildWhisperComand(audioFormat))
-                .workingDirectory(whisperConfig.getExecutable().getParent())
-                .build();
             Process process = comandBuilder.startComand(config);
             Thread stdoutReader = new Thread(() -> bufferCleaner.captureStream(
                 new BufferedReader(new InputStreamReader(process.getInputStream())),
@@ -80,13 +81,13 @@ public class WhisperTranscriber implements Transcriber{
         }
     }
 
-    private List<String> buildWhisperComand(String audioFormat){
+    private List<String> buildWhisperComand(String audioFormat, Path audioPath){
         List<String> cmd = new LinkedList<>();
-        cmd.add(whisperConfig.getExecutablePath());
+        cmd.add(whisperConfig.getExecutablePath().toString());
         cmd.add("-m");
-        cmd.add(whisperConfig.getModelPath());
+        cmd.add(whisperConfig.getModelPath().toString());
         cmd.add("-f");
-        cmd.add(whisperConfig.getAudioPath().toString());
+        cmd.add(audioPath.toString());
         cmd.add("-l");
         cmd.add(whisperConfig.getLanguage());
         cmd.add("--gpu-device");

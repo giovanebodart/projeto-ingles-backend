@@ -1,6 +1,4 @@
 package projeto.ingles.utils;
-
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.springframework.stereotype.Component;
@@ -14,9 +12,10 @@ public class ComandBuilder {
     public Process startComand(ProcessConfig config) {
         ProcessBuilder pb = new ProcessBuilder(config.getCommand());
         pb.redirectErrorStream(false);
-
         Path workDir = config.getWorkingDirectory();
+
         if (workDir != null && Files.exists(workDir)) {
+            
             pb.directory(workDir.toFile());
         }
 
