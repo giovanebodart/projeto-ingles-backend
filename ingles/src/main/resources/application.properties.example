@@ -1,0 +1,7 @@
+spring.applications.name=example
+server.port=0000
+whisper.executable-path=dir\model-cli.exe
+whisper.model-path=dir\model.bin
+whisper.language=
+whisper.threads=
+whisper.timeout.seconds=

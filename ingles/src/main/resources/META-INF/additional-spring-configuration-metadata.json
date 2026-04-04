@@ -1,0 +1,57 @@
+{"properties": [
+  {
+    "name": "app.storage.path",
+    "type": "java.lang.String",
+    "description": "A description for 'app.storage.path'"
+  },
+  {
+    "name": "whisper.executable-path",
+    "type": "java.lang.String",
+    "description": "A description for 'whisper.executable-path'"
+  },
+  {
+    "name": "whisper.model-path",
+    "type": "java.lang.String",
+    "description": "A description for 'whisper.model-path'"
+  },
+  {
+    "name": "whisper.timeout-seconds",
+    "type": "java.lang.String",
+    "description": "A description for 'whisper.timeout-seconds'"
+  },
+  {
+    "name": "whisper.threads",
+    "type": "java.lang.String",
+    "description": "A description for 'whisper.threads'"
+  },
+  {
+    "name": "whisper.language",
+    "type": "java.lang.String",
+    "description": "A description for 'whisper.language'"
+  },
+  {
+    "name": "spacy.uri",
+    "type": "java.lang.String",
+    "description": "A description for 'spacy.uri'"
+  },
+  {
+    "name": "lemma.filter.global-frequency-cutoff-rank",
+    "type": "java.lang.String",
+    "description": "A description for 'lemma.filter.global-frequency-cutoff-rank'"
+  },
+  {
+    "name": "lemma.filter.minimum-score",
+    "type": "java.lang.String",
+    "description": "A description for 'lemma.filter.minimum-score'"
+  },
+  {
+    "name": "lemma.filter.personal-frequency-weight",
+    "type": "java.lang.String",
+    "description": "A description for 'lemma.filter.personal-frequency-weight'"
+  },
+  {
+    "name": "lemma.filter.global-frequency-weight",
+    "type": "java.lang.String",
+    "description": "A description for 'lemma.filter.global-frequency-weight'"
+  }
+]}
