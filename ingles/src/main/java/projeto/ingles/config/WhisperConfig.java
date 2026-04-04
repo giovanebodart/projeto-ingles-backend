@@ -24,8 +24,12 @@ public class WhisperConfig {
     private Integer timeout = 180;
     private Integer threads = 4;
 
+    private Path projectRoot;
+
     @PostConstruct
     public void validate() throws IOException {
+        projectRoot = resolveProjectRoot();
+        log.atInfo().log("Projeto raiz detectado em: {}", projectRoot);
         validateExists("executablePath", executablePath);
         validateExists("modelPath", modelPath);
         log.atInfo().log("WhisperConfig inicializado:");
@@ -34,6 +38,10 @@ public class WhisperConfig {
         log.atInfo().log("  language   : {}", language);
         log.atInfo().log("  threads    : {}", threads);
         log.atInfo().log("  timeout    : {}s", timeout);
+    }
+
+    public Path getExecutableDirectory(){   
+        return getExecutablePath().getParent(); 
     }
 
     public Path getExecutablePath() {
@@ -48,7 +56,24 @@ public class WhisperConfig {
         if (!StringUtils.hasText(value)) {
             throw new IllegalStateException("Caminho nao configurado: valor ausente ou vazio.");
         }
-        return Paths.get(value).toAbsolutePath().normalize();
+        Path p = Path.of(value);
+        return (p.isAbsolute() ? p : projectRoot.resolve(p))
+                .toAbsolutePath()
+                .normalize();
+    }
+
+    private Path resolveProjectRoot() {
+        Path current = Path.of(System.getProperty("user.dir")).toAbsolutePath();
+        while (current != null) {
+            if (Files.exists(current.resolve("pom.xml"))) {
+                return current;
+            }
+            current = current.getParent();
+        }
+        throw new IllegalStateException(
+            "Raiz do projeto não encontrada. Nenhum pom.xml localizado a partir de: " +
+            System.getProperty("user.dir")
+        );
     }
 
     private void validateExists(String fieldName, String value) {

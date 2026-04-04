@@ -36,7 +36,7 @@ public class WhisperTranscriber implements Transcriber{
         log.atInfo().log("Transcriçao iniciada"); 
         ProcessConfig config = ProcessConfig.builder()
             .command(buildWhisperComand(audioFormat, audioFilesUtilities.getAudioFile(audioFormat)))
-            .workingDirectory(whisperConfig.getExecutablePath())
+            .workingDirectory(whisperConfig.getExecutableDirectory())
             .build();
         long startTime = System.currentTimeMillis();
         try{  
@@ -83,7 +83,7 @@ public class WhisperTranscriber implements Transcriber{
 
     private List<String> buildWhisperComand(String audioFormat, Path audioPath){
         List<String> cmd = new LinkedList<>();
-        cmd.add(whisperConfig.getExecutablePath().toString());
+        cmd.add(whisperConfig.getExecutableDirectory().resolve(whisperConfig.getExecutablePath()).toString());
         cmd.add("-m");
         cmd.add(whisperConfig.getModelPath().toString());
         cmd.add("-f");
@@ -94,18 +94,18 @@ public class WhisperTranscriber implements Transcriber{
         cmd.add("0");
         cmd.add("--flash-attn");
         cmd.add("-t");
-        cmd.add("4");
-        cmd.add("--beam-size");
-        cmd.add("5");
-        cmd.add("--best-of");
-        cmd.add("5");
-        cmd.add("--no-prints");
-        cmd.add("--special");
-        cmd.add("false");
-        cmd.add("--no-timestamps");
-        cmd.add("--suppress-nst");
-        cmd.add("--output-file");
-        cmd.add("");
+        cmd.add(String.valueOf(whisperConfig.getThreads()));
+        // cmd.add("--beam-size");
+        // cmd.add("5");
+        // cmd.add("--best-of");
+        // cmd.add("5");
+        // cmd.add("--no-prints");
+        // cmd.add("--special");
+        // cmd.add("false");
+        // cmd.add("--no-timestamps");
+        // cmd.add("--suppress-nst");
+        // cmd.add("--output-file");
+        // cmd.add("");
         return cmd;
     }
     
