@@ -2,7 +2,6 @@ package projeto.ingles.config;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;

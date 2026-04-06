@@ -33,9 +33,11 @@ public class WhisperTranscriber implements Transcriber{
 
     @Override
     public String transcribeAudio(String audioFormat) {
-        log.atInfo().log("Transcriçao iniciada"); 
+        log.atInfo().log("Transcriçao iniciada");
+        Path audioPath = audioFilesUtilities.getAudioFile(audioFormat); 
+        log.atInfo().log("Audio recebido: {}", audioPath);
         ProcessConfig config = ProcessConfig.builder()
-            .command(buildWhisperComand(audioFormat, audioFilesUtilities.getAudioFile(audioFormat)))
+            .command(buildWhisperComand(audioFormat, audioPath))
             .workingDirectory(whisperConfig.getExecutableDirectory())
             .build();
         long startTime = System.currentTimeMillis();
@@ -70,20 +72,21 @@ public class WhisperTranscriber implements Transcriber{
                     ". Stderr: " + errorBuilder.toString().trim());
             }
             long endTime = System.currentTimeMillis();
-            log.atInfo().log("Transcrição concluída");
+            log.atInfo().log("Transcriçao concluída");
+            log.atInfo().log("Saída do Whisper: {}", outputBuilder.toString().trim());
             log.atInfo().log("Time to finish: {} ms", endTime - startTime);
             return outputBuilder.toString();
         } catch(InterruptedException e){
             Thread.currentThread().interrupt();
             throw new RuntimeException("Transcrição interrompida.", e);
         } finally{
-            audioFilesUtilities.removeAudio(audioFormat);
+            // audioFilesUtilities.removeAudio(audioFormat);
         }
     }
 
     private List<String> buildWhisperComand(String audioFormat, Path audioPath){
         List<String> cmd = new LinkedList<>();
-        cmd.add(whisperConfig.getExecutableDirectory().resolve(whisperConfig.getExecutablePath()).toString());
+        cmd.add(whisperConfig.getExecutablePath().toString());
         cmd.add("-m");
         cmd.add(whisperConfig.getModelPath().toString());
         cmd.add("-f");

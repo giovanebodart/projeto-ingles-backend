@@ -22,7 +22,7 @@ public class AudioFilesImpl implements AudioFilesUtilities{
     
     @Override
     public Path getAudioFile(String audioFormat) {
-    Path storagePath = audioStorageConfig.getResolvedPath();
+        Path storagePath = audioStorageConfig.getResolvedPath();
         Path audioPath = null;
         try(Stream<Path> files = Files.list(storagePath)){
             audioPath = files
@@ -43,18 +43,6 @@ public class AudioFilesImpl implements AudioFilesUtilities{
             Files.deleteIfExists(audioPath);
         } catch (Exception e) {
             throw new RuntimeException("Erro ao remover o arquivo de áudio original.", e);
-        }
-    }
-
-    @Override
-    public Path resolveAudioDirectory(String directory) {        
-        Path dir = Path.of(System.getProperty("user.dir"), directory);
-        try {
-            Files.createDirectories(dir); 
-            log.atInfo().log("Diretório de storage: {}", dir);
-            return dir;
-        } catch (IOException e) {
-            throw new RuntimeException("Não foi possível criar o diretório de storage: " + dir, e);
         }
     }
 }

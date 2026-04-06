@@ -28,5 +28,15 @@
     "name": "whisper.timeout",
     "type": "java.lang.String",
     "description": "A description for 'whisper.timeout'"
+  },
+  {
+    "name": "audio.storage.path",
+    "type": "java.lang.String",
+    "description": "A description for 'audio.storage.path'"
+  },
+  {
+    "name": "whisper.timeout",
+    "type": "java.lang.String",
+    "description": "A description for 'whisper.timeout'"
   }
 ]}
