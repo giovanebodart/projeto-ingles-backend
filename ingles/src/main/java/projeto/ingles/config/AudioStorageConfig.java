@@ -21,7 +21,6 @@ public class AudioStorageConfig {
             audioPath = projectRoot.resolve(audioPath).toAbsolutePath();
         }
         try {
-            log.atInfo().log("Diretório de armazenamento de áudio resolvido em: {}", audioPath);
             return audioPath;
         } catch (Exception e) {
             throw new RuntimeException("Não foi possível criar o diretório de armazenamento de áudio: " + audioPath, e);

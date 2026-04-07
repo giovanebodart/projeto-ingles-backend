@@ -1,6 +1,7 @@
 package projeto.ingles.model.service;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,26 +14,30 @@ import projeto.ingles.model.interfaces.AudioFilesUtilities;
 import projeto.ingles.model.interfaces.Transcriber;
 import projeto.ingles.utils.BufferCleaner;
 import projeto.ingles.utils.ComandBuilder;
+import projeto.ingles.utils.TextFilesImpl;
 
 @Service
 @Log4j2
 public class WhisperTranscriber implements Transcriber{
     
+    private final TextFilesImpl textFilesImpl;
     private final WhisperConfig whisperConfig;
     private final BufferCleaner bufferCleaner;
     private final ComandBuilder comandBuilder;
     private final AudioFilesUtilities audioFilesUtilities;
 
     public WhisperTranscriber(WhisperConfig whisperConfig, BufferCleaner bufferCleaner, ComandBuilder comandBuilder,
-         AudioFilesUtilities audioFilesUtilities) {
+         AudioFilesUtilities audioFilesUtilities, TextFilesImpl textFilesImpl) {
         this.whisperConfig = whisperConfig;
         this.bufferCleaner = bufferCleaner;
         this.comandBuilder = comandBuilder;
         this.audioFilesUtilities = audioFilesUtilities;
+        this.textFilesImpl = textFilesImpl;
     }
 
     @Override
     public String transcribeAudio(String audioFormat) {
+        String transcript = "";
         log.atInfo().log("Transcriçao iniciada");
         Path audioPath = audioFilesUtilities.getAudioFile(audioFormat); 
         log.atInfo().log("Audio recebido: {}", audioPath);
@@ -42,23 +47,17 @@ public class WhisperTranscriber implements Transcriber{
             .build();
         long startTime = System.currentTimeMillis();
         try{  
-            StringBuilder outputBuilder = new StringBuilder();
             StringBuilder errorBuilder = new StringBuilder();
             Process process = comandBuilder.startComand(config);
-            Thread stdoutReader = new Thread(() -> bufferCleaner.captureStream(
-                new BufferedReader(new InputStreamReader(process.getInputStream())),
-                outputBuilder
-            ));
-            
+            Path outputText = audioPath.toAbsolutePath();
             Thread stderr = new Thread(() ->{ bufferCleaner.captureStream(
                 new BufferedReader(new InputStreamReader(process.getErrorStream())), 
                 errorBuilder);
             });
-
-            stdoutReader.start();
+            
+            log.atInfo().log("Iniciando transcrição do áudio: {}", audioPath);
             stderr.start();
             boolean success = process.waitFor(180, TimeUnit.SECONDS);
-            stdoutReader.join(5000);
             stderr.join(5000);
 
             if (!success) {
@@ -73,14 +72,14 @@ public class WhisperTranscriber implements Transcriber{
             }
             long endTime = System.currentTimeMillis();
             log.atInfo().log("Transcriçao concluída");
-            log.atInfo().log("Saída do Whisper: {}", outputBuilder.toString().trim());
-            log.atInfo().log("Time to finish: {} ms", endTime - startTime);
-            return outputBuilder.toString();
+            log.atInfo().log("Tempo de execuçao: {} ms", endTime - startTime);
+            if(outputText.endsWith(".txt")) transcript = textFilesImpl.readTextFile(outputText);
+            return transcript;
         } catch(InterruptedException e){
             Thread.currentThread().interrupt();
             throw new RuntimeException("Transcrição interrompida.", e);
         } finally{
-            // audioFilesUtilities.removeAudio(audioFormat);
+            audioFilesUtilities.removeAudio(audioFormat);
         }
     }
 
@@ -90,7 +89,7 @@ public class WhisperTranscriber implements Transcriber{
         cmd.add("-m");
         cmd.add(whisperConfig.getModelPath().toString());
         cmd.add("-f");
-        cmd.add(audioPath.toString());
+        cmd.add(audioPath.toAbsolutePath().toString());
         cmd.add("-l");
         cmd.add(whisperConfig.getLanguage());
         cmd.add("--gpu-device");
@@ -105,10 +104,11 @@ public class WhisperTranscriber implements Transcriber{
         // cmd.add("--no-prints");
         // cmd.add("--special");
         // cmd.add("false");
-        // cmd.add("--no-timestamps");
+        cmd.add("--no-timestamps");
         // cmd.add("--suppress-nst");
-        // cmd.add("--output-file");
-        // cmd.add("");
+        cmd.add("--output-txt");
+        cmd.add("--output-file");
+        cmd.add(audioPath.toAbsolutePath().toString().replace(audioFormat, ".txt"));
         return cmd;
     }
     

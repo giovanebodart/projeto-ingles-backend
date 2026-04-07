@@ -46,7 +46,8 @@ public class YtdlpDownloader implements Downloader {
                 new BufferedReader(new InputStreamReader(process.getInputStream())),
                 stdoutBuilder
             ));
-
+            
+            log.atInfo().log("Iniciando download do áudio do vídeo: {}", videoUrl);
             stderrReader.start();
             stdoutReader.start();
             boolean success = process.waitFor(50, TimeUnit.SECONDS);

@@ -1,4 +1,7 @@
 package projeto.ingles.utils;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -23,4 +26,16 @@ public class TextFilesImpl implements TextFilesUtilities {
         }
         return segments;
     }
+
+    @Override
+    public String readTextFile(Path filePath) {
+        try {
+            return Files.readString(filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+
 }

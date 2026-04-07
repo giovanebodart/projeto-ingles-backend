@@ -30,10 +30,11 @@ public class FfmpegTransformer implements Transformer {
     @Override
     public void transformAudioFormat(String audioFormat) {
         Path audioPath = audioFiles.getAudioFile(audioFormat);
+        log.atInfo().log("Iniciando transformaçao do áudio: {}", audioPath);
         String fileName = audioPath.getFileName().toString();
         ProcessConfig ffmpegConfig = ProcessConfig.builder()
             .command(buildFfmpegComand(fileName, audioFormat))
-            .workingDirectory(Path.of("storage\\audios"))
+            .workingDirectory(audioPath.getParent())
             .build();
 
         try {

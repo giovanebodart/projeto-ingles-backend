@@ -15,7 +15,6 @@ public class ComandBuilder {
         Path workDir = config.getWorkingDirectory();
 
         if (workDir != null && Files.exists(workDir)) {
-            
             pb.directory(workDir.toFile());
         }
 
