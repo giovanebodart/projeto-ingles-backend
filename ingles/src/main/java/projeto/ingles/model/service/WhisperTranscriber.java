@@ -38,31 +38,31 @@ public class WhisperTranscriber implements Transcriber{
     @Override
     public String transcribeAudio(String audioFormat) {
         String transcript = "";
-        log.atInfo().log("Transcriçao iniciada");
-        Path audioPath = audioFilesUtilities.getAudioFile(audioFormat); 
+        Path audioPath = audioFilesUtilities.getAudioFile(audioFormat);
         log.atInfo().log("Audio recebido: {}", audioPath);
+        Path outputText = buildTranscriptPath(audioPath); 
+        
         ProcessConfig config = ProcessConfig.builder()
-            .command(buildWhisperComand(audioFormat, audioPath))
+            .command(buildWhisperComand(audioPath, outputText))
             .workingDirectory(whisperConfig.getExecutableDirectory())
             .build();
         long startTime = System.currentTimeMillis();
         try{  
             StringBuilder errorBuilder = new StringBuilder();
             Process process = comandBuilder.startComand(config);
-            Path outputText = audioPath.toAbsolutePath();
             Thread stderr = new Thread(() ->{ bufferCleaner.captureStream(
                 new BufferedReader(new InputStreamReader(process.getErrorStream())), 
                 errorBuilder);
             });
             
-            log.atInfo().log("Iniciando transcrição do áudio: {}", audioPath);
+            log.atInfo().log("Iniciando transcriçao do áudio: {}", audioPath);
             stderr.start();
             boolean success = process.waitFor(180, TimeUnit.SECONDS);
             stderr.join(5000);
 
             if (!success) {
                 process.destroyForcibly();
-                throw new RuntimeException("Transcrição excedeu o timeout de " + whisperConfig.getTimeout() + "s");
+                throw new RuntimeException("Transcriçao excedeu o timeout de " + whisperConfig.getTimeout() + "s");
             }
  
             if (process.exitValue() != 0) {
@@ -73,17 +73,22 @@ public class WhisperTranscriber implements Transcriber{
             long endTime = System.currentTimeMillis();
             log.atInfo().log("Transcriçao concluída");
             log.atInfo().log("Tempo de execuçao: {} ms", endTime - startTime);
-            if(outputText.endsWith(".txt")) transcript = textFilesImpl.readTextFile(outputText);
+            if (Files.exists(outputText)) {
+                transcript = textFilesImpl.readTextFile(outputText);
+                log.atInfo().log("Transcriçao salva em: {}", outputText);
+            } else {
+                throw new RuntimeException("Arquivo de transcriçao nao foi gerado: " + outputText);
+            }
             return transcript;
         } catch(InterruptedException e){
             Thread.currentThread().interrupt();
-            throw new RuntimeException("Transcrição interrompida.", e);
+            throw new RuntimeException("Transcriçao interrompida.", e);
         } finally{
             audioFilesUtilities.removeAudio(audioFormat);
         }
     }
 
-    private List<String> buildWhisperComand(String audioFormat, Path audioPath){
+    private List<String> buildWhisperComand(Path audioPath, Path outputText){
         List<String> cmd = new LinkedList<>();
         cmd.add(whisperConfig.getExecutablePath().toString());
         cmd.add("-m");
@@ -108,8 +113,13 @@ public class WhisperTranscriber implements Transcriber{
         // cmd.add("--suppress-nst");
         cmd.add("--output-txt");
         cmd.add("--output-file");
-        cmd.add(audioPath.toAbsolutePath().toString().replace(audioFormat, ".txt"));
+        cmd.add(outputText.toAbsolutePath().toString());
         return cmd;
     }
-    
+
+    private Path buildTranscriptPath(Path audioPath) {
+        String audioFileName = audioPath.getFileName().toString();
+        return audioPath.resolveSibling(audioFileName.replaceAll(" ", "_").replaceFirst("\\.[^.]+$", ".txt"));
+    }
+
 }
