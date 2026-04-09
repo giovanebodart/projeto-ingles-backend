@@ -6,4 +6,5 @@ public interface TextFilesUtilities {
     
     List<String> treatText(String text);
     String readTextFile(Path filePath);
+    void deleteFileIfExists(Path filePath);
 }

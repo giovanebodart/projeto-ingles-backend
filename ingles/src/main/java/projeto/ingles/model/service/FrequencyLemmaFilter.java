@@ -1,6 +1,5 @@
 package projeto.ingles.model.service;
 import projeto.ingles.config.LemmaFilterConfig;
-import projeto.ingles.model.entities.Expression;
 import projeto.ingles.model.entities.Result;
 import projeto.ingles.model.entities.ScoredLemma;
 import projeto.ingles.model.interfaces.LemmaFilter;

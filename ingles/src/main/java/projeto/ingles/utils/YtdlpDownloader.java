@@ -47,7 +47,7 @@ public class YtdlpDownloader implements Downloader {
                 stdoutBuilder
             ));
             
-            log.atInfo().log("Iniciando download do áudio do vídeo: {}", videoUrl);
+            log.atInfo().log("Download do áudio do vídeo: {} foi iniciado", videoUrl);
             stderrReader.start();
             stdoutReader.start();
             boolean success = process.waitFor(50, TimeUnit.SECONDS);

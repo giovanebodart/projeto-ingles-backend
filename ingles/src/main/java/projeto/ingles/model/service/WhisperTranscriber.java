@@ -40,16 +40,24 @@ public class WhisperTranscriber implements Transcriber{
         String transcript = "";
         Path audioPath = audioFilesUtilities.getAudioFile(audioFormat);
         log.atInfo().log("Audio recebido: {}", audioPath);
-        Path outputText = buildTranscriptPath(audioPath); 
+        Path outputBasePath = buildTranscriptPath(audioPath);
+        Path outputText = outputBasePath.resolveSibling(outputBasePath.getFileName() + ".txt");
         
         ProcessConfig config = ProcessConfig.builder()
-            .command(buildWhisperComand(audioPath, outputText))
+            .command(buildWhisperComand(audioPath, outputBasePath))
             .workingDirectory(whisperConfig.getExecutableDirectory())
             .build();
         long startTime = System.currentTimeMillis();
+
         try{  
             StringBuilder errorBuilder = new StringBuilder();
+            StringBuilder outputBuilder = new StringBuilder();
             Process process = comandBuilder.startComand(config);
+
+            Thread stdout = new Thread(() -> { bufferCleaner.captureStream(
+                    new BufferedReader(new InputStreamReader(process.getInputStream())), 
+                    outputBuilder);
+            });
             Thread stderr = new Thread(() ->{ bufferCleaner.captureStream(
                 new BufferedReader(new InputStreamReader(process.getErrorStream())), 
                 errorBuilder);
@@ -57,8 +65,10 @@ public class WhisperTranscriber implements Transcriber{
             
             log.atInfo().log("Iniciando transcriçao do áudio: {}", audioPath);
             stderr.start();
+            stdout.start();
             boolean success = process.waitFor(180, TimeUnit.SECONDS);
             stderr.join(5000);
+            stdout.join(5000);
 
             if (!success) {
                 process.destroyForcibly();
@@ -70,25 +80,32 @@ public class WhisperTranscriber implements Transcriber{
                 throw new RuntimeException("Processo Whisper falhou com código: " + process.exitValue() +
                     ". Stderr: " + errorBuilder.toString().trim());
             }
+
             long endTime = System.currentTimeMillis();
             log.atInfo().log("Transcriçao concluída");
             log.atInfo().log("Tempo de execuçao: {} ms", endTime - startTime);
+            log.atInfo().log("Verificando arquivo de transcriçao: {}", outputText);
+
             if (Files.exists(outputText)) {
                 transcript = textFilesImpl.readTextFile(outputText);
-                log.atInfo().log("Transcriçao salva em: {}", outputText);
+                log.atInfo().log("Transcriçao salva como: {}", outputText);
             } else {
+                log.atInfo().log("Whisper output: {}", outputBuilder);
+                log.atError().log("Whisper stderr: {}", errorBuilder);
                 throw new RuntimeException("Arquivo de transcriçao nao foi gerado: " + outputText);
             }
+
             return transcript;
         } catch(InterruptedException e){
             Thread.currentThread().interrupt();
             throw new RuntimeException("Transcriçao interrompida.", e);
         } finally{
             audioFilesUtilities.removeAudio(audioFormat);
+            textFilesImpl.deleteFileIfExists(outputText);
         }
     }
 
-    private List<String> buildWhisperComand(Path audioPath, Path outputText){
+    private List<String> buildWhisperComand(Path audioPath, Path outputBasePath){
         List<String> cmd = new LinkedList<>();
         cmd.add(whisperConfig.getExecutablePath().toString());
         cmd.add("-m");
@@ -97,29 +114,19 @@ public class WhisperTranscriber implements Transcriber{
         cmd.add(audioPath.toAbsolutePath().toString());
         cmd.add("-l");
         cmd.add(whisperConfig.getLanguage());
-        cmd.add("--gpu-device");
-        cmd.add("0");
         cmd.add("--flash-attn");
         cmd.add("-t");
         cmd.add(String.valueOf(whisperConfig.getThreads()));
-        // cmd.add("--beam-size");
-        // cmd.add("5");
-        // cmd.add("--best-of");
-        // cmd.add("5");
-        // cmd.add("--no-prints");
-        // cmd.add("--special");
-        // cmd.add("false");
         cmd.add("--no-timestamps");
-        // cmd.add("--suppress-nst");
         cmd.add("--output-txt");
         cmd.add("--output-file");
-        cmd.add(outputText.toAbsolutePath().toString());
+        cmd.add(outputBasePath.toAbsolutePath().toString());
         return cmd;
     }
 
     private Path buildTranscriptPath(Path audioPath) {
         String audioFileName = audioPath.getFileName().toString();
-        return audioPath.resolveSibling(audioFileName.replaceAll(" ", "_").replaceFirst("\\.[^.]+$", ".txt"));
+        String baseName = audioFileName.replaceAll(" ", "_").replaceFirst("\\.[^.]+$", "");
+        return audioPath.resolveSibling(baseName);
     }
-
 }

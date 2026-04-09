@@ -37,5 +37,12 @@ public class TextFilesImpl implements TextFilesUtilities {
         return "";
     }
 
-
+    @Override
+    public void deleteFileIfExists(Path filePath) {
+        try {
+            Files.deleteIfExists(filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
