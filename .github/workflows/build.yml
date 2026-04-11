@@ -27,5 +27,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/seu-usuario/projeto-ingles-backend:latest
-            ghcr.io/seu-usuario/projeto-ingles-backend:${{ github.sha }}
+            ghcr.io/giovanebodart/projeto-ingles-backend:latest
+            ghcr.io/giovanebodart/projeto-ingles-backend:${{ github.sha }}
