@@ -3,7 +3,6 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import lombok.extern.log4j.Log4j2;
 import projeto.ingles.model.dto.FilterLemmaResponse;
-import projeto.ingles.model.interfaces.AudioFilesUtilities;
 import projeto.ingles.model.interfaces.Downloader;
 import projeto.ingles.model.interfaces.LemmaFilter;
 import projeto.ingles.model.interfaces.TextAnalyser;
@@ -14,7 +13,6 @@ import projeto.ingles.model.interfaces.Transformer;
 @Controller
 @Log4j2
 public class TranscribeProcessController {
-
     private static final String MP3_FORMAT = ".mp3";
     private static final String WAV_FORMAT = ".wav";
     private final Downloader downloader;
