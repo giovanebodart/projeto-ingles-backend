@@ -8,7 +8,7 @@ COPY ingles/pom.xml .
 RUN mvn dependency:go-offline -q
 
 # Copia o fonte e compila
-COPY src ./src
+COPY ingles/src ./src
 RUN mvn package -DskipTests -q
 
 # ── Stage 2: runtime ─────────────────────────────────────────────────────────
