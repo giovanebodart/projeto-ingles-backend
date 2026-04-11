@@ -1,5 +1,6 @@
 package projeto.ingles.model.service;
 import projeto.ingles.config.LemmaFilterConfig;
+import projeto.ingles.model.entities.ExpressionType;
 import projeto.ingles.model.entities.Result;
 import projeto.ingles.model.entities.ScoredLemma;
 import projeto.ingles.model.interfaces.LemmaFilter;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -23,52 +25,53 @@ public class FrequencyLemmaFilter implements LemmaFilter {
         public FilterLemmaResponse filter(Long userId, List<Result> results) {
                 log.atInfo().log("Iniciando filtragem de lemmas para usuário {}: {} expressões recebidas",
                         userId, results.size());
+                int totalWords = config.getSubtitlesRankMap().size();
                 long start = System.currentTimeMillis();
                 int totalUserOccurrences = 0;
-                List<ScoredLemma> scored = new ArrayList<>();
-                for(var result : results) {
-                        for (var expression : result.expressions()) {
-                                String lemma = expression.lemma();
-                                if (lemma == null || lemma.isBlank()) continue;
-                                if (config.isTooCommon(lemma)) {
-                                        log.atInfo().log("Lemma '{}' descartado: rank global {} <= threshold {}",
-                                                lemma, config.getRank(lemma), config.getGlobalFrequencyCutoffRank());
-                                        continue;
+                List<ScoredLemma> scored = results.parallelStream()
+                        .flatMap(result -> {
+                                List<ScoredLemma> partial = new ArrayList<>();
+                                for (var expression : result.expressions()) {
+                                        String lemma = expression.lemma();
+                                        if (lemma == null || lemma.isBlank()) continue;
+
+                                        ScoredLemma sl = buildScore(lemma, expression.type(), expression.text(), totalWords);
+                                        if (sl != null) partial.add(sl);
                                 }
 
-                                int rank = config.getRank(lemma);
-                                int totalWords = config.getSubtitlesRankMap().size();
-                                double globalFrequencyScore = rank == Integer.MAX_VALUE
-                                        ? 1.0  
-                                        : (double) rank / totalWords;
-                                int personalOccurrences = 0;
-
-                                double personalFrequencyScore = totalUserOccurrences > 0
-                                        ? Math.min((double) personalOccurrences / totalUserOccurrences * 10, 1.0)
-                                        : 0.0;
-
-                                double finalScore = (globalFrequencyScore * config.getGlobalFrequencyWeight())
-                                        + (personalFrequencyScore * config.getPersonalFrequencyWeight());
-
-                                if (finalScore < config.getMinimumScore()) {
-                                        log.atInfo().log("Lemma '{}' descartado por score insuficiente: {}", lemma, finalScore);
-                                        continue;
+                                for (var token : result.tokens()) {
+                                        if (token.lemma() == null || token.lemma().isBlank()) continue;
+                                        String lemma = token.lemma().toLowerCase().trim();
+                                        ScoredLemma sl = buildScore(lemma, ExpressionType.TOKEN, token.text(), totalWords);
+                                        if (sl != null) partial.add(sl);
                                 }
-                                scored.add(ScoredLemma.builder()
-                                        .lemma(lemma)
-                                        .type(expression.type())
-                                        .originalText(expression.text())
-                                        .globalFrequencyScore(globalFrequencyScore)
-                                        .personalFrequencyScore(personalFrequencyScore)
-                                        .finalScore(finalScore)
-                                        .personalOccurrences(personalOccurrences)
-                                        .build());
-                        }
-                        scored.sort(Comparator.comparingDouble(ScoredLemma::getFinalScore).reversed());
-                        long end = System.currentTimeMillis();
-                        log.atInfo().log("Filtragem concluída para usuário {}: {}/{} lemmas aprovados em {} ms",
-                                userId, scored.size(), result.expressions().size(), end - start);
-                }
-                return new FilterLemmaResponse(scored);        
+                                return partial.stream();
+                        })
+                        .sorted(Comparator.comparingDouble(ScoredLemma::getFinalScore).reversed())
+                        .collect(Collectors.toList());    
+                long end = System.currentTimeMillis();
+                log.atInfo().log("Filtragem concluída para usuário {}: {} expressões filtradas em {} ms",
+                        userId, scored.size(), (end - start));
+                return new FilterLemmaResponse(scored);    
         }
+        private ScoredLemma buildScore(String lemma, ExpressionType type, String originalText, int totalWords) {
+                if (config.isTooCommon(lemma)) return null;
+                int rank = config.getRank(lemma);
+                double globalFrequencyScore = (rank == Integer.MAX_VALUE)
+                        ? 1.0
+                        : (double) rank / totalWords;
+                int personalOccurrences = 0;
+                double personalFrequencyScore = 0.0;
+                double finalScore = (globalFrequencyScore * config.getGlobalFrequencyWeight())
+                        + (personalFrequencyScore * config.getPersonalFrequencyWeight());
+                return ScoredLemma.builder()
+                        .lemma(lemma)
+                        .type(type)
+                        .originalText(originalText)
+                        .globalFrequencyScore(globalFrequencyScore)
+                        .personalFrequencyScore(personalFrequencyScore)
+                        .finalScore(finalScore)
+                        .personalOccurrences(personalOccurrences)
+                        .build();
+    }
 }
