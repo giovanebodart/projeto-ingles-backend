@@ -4,7 +4,7 @@ FROM maven:3.9.6-eclipse-temurin-21 AS builder
 WORKDIR /build
 
 # Copia só o pom primeiro para aproveitar cache de dependências
-COPY pom.xml .
+COPY ingles/pom.xml .
 RUN mvn dependency:go-offline -q
 
 # Copia o fonte e compila
