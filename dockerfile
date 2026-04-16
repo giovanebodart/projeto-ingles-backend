@@ -14,7 +14,7 @@ RUN mvn package -DskipTests -q
 # ── Stage 2: runtime ─────────────────────────────────────────────────────────
 FROM eclipse-temurin:21-jre-alpine
 
-WORKDIR /app
+WORKDIR /ingles
 
 # Usuário não-root por segurança
 RUN addgroup -S spring && adduser -S spring -G spring
