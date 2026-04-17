@@ -5,9 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.springframework.stereotype.Service;
 import lombok.extern.log4j.Log4j2;
@@ -18,7 +15,6 @@ import projeto.ingles.model.interfaces.Transcriber;
 import projeto.ingles.utils.BufferCleaner;
 import projeto.ingles.utils.ComandBuilder;
 import projeto.ingles.utils.TextFilesImpl;
-import reactor.core.publisher.Mono;
 
 @Service
 @Log4j2
