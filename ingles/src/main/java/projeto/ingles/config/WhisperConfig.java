@@ -25,10 +25,19 @@ public class WhisperConfig {
 
     private Path projectRoot;
 
+    public void init(){
+        
+    }
+
     @PostConstruct
     public void validate() throws IOException {
-        projectRoot = resolveProjectRoot();
-        log.atInfo().log("Projeto raiz detectado em: {}", projectRoot);
+
+        if (!Path.of(executablePath).isAbsolute() || !Path.of(modelPath).isAbsolute()) {
+            projectRoot = resolveProjectRoot();
+            log.atInfo().log("Projeto raiz detectado em: {}", projectRoot);
+        } else {
+            projectRoot = Path.of("/"); 
+        }
         validateExists("executablePath", executablePath);
         validateExists("modelPath", modelPath);
         log.atInfo().log("WhisperConfig inicializado:");
@@ -69,10 +78,8 @@ public class WhisperConfig {
             }
             current = current.getParent();
         }
-        throw new IllegalStateException(
-            "Raiz do projeto não encontrada. Nenhum pom.xml localizado a partir de: " +
-            System.getProperty("user.dir")
-        );
+        log.atWarn().log("pom.xml não encontrado, usando raiz do sistema como projectRoot");
+        return Path.of("/");
     }
 
     private void validateExists(String fieldName, String value) {
