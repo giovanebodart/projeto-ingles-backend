@@ -1,5 +1,7 @@
 package projeto.ingles.config;
+
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import jakarta.annotation.PostConstruct;
@@ -25,19 +27,20 @@ public class WhisperConfig {
 
     private Path projectRoot;
 
-    public void init(){
-        
-    }
-
     @PostConstruct
     public void validate() throws IOException {
+
+        if (!StringUtils.hasText(executablePath) || !StringUtils.hasText(modelPath)) {
+            throw new IllegalStateException("whisper.executable-path e whisper.model-path devem ser configurados.");
+        }
 
         if (!Path.of(executablePath).isAbsolute() || !Path.of(modelPath).isAbsolute()) {
             projectRoot = resolveProjectRoot();
             log.atInfo().log("Projeto raiz detectado em: {}", projectRoot);
         } else {
-            projectRoot = Path.of("/"); 
+            projectRoot = Path.of("/");
         }
+
         validateExists("executablePath", executablePath);
         validateExists("modelPath", modelPath);
         log.atInfo().log("WhisperConfig inicializado:");
@@ -48,8 +51,8 @@ public class WhisperConfig {
         log.atInfo().log("  timeout    : {}s", timeout);
     }
 
-    public Path getExecutableDirectory(){   
-        return getExecutablePath().getParent(); 
+    public Path getExecutableDirectory() {
+        return getExecutablePath().getParent();
     }
 
     public Path getExecutablePath() {
@@ -71,15 +74,40 @@ public class WhisperConfig {
     }
 
     private Path resolveProjectRoot() {
-        Path current = Path.of(System.getProperty("user.dir")).toAbsolutePath();
+        Path fromUserDir = findPomOrNull(Path.of(System.getProperty("user.dir")).toAbsolutePath());
+        if (fromUserDir != null) {
+            return fromUserDir;
+        }
+
+        Path fromJarDir = findPomOrNull(resolveRunningLocation());
+        if (fromJarDir != null) {
+            return fromJarDir;
+        }
+
+        Path fallback = Path.of(System.getProperty("user.dir")).toAbsolutePath().normalize();
+        log.atWarn().log("pom.xml não encontrado; usando diretório de execução como projectRoot: {}", fallback);
+        return fallback;
+    }
+
+    private Path findPomOrNull(Path start) {
+        Path current = start;
         while (current != null) {
             if (Files.exists(current.resolve("pom.xml"))) {
                 return current;
             }
             current = current.getParent();
         }
-        log.atWarn().log("pom.xml não encontrado, usando raiz do sistema como projectRoot");
-        return Path.of("/");
+        return null;
+    }
+
+    private Path resolveRunningLocation() {
+        try {
+            Path location = Path.of(WhisperConfig.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            return Files.isDirectory(location) ? location : location.getParent();
+        } catch (URISyntaxException | NullPointerException e) {
+            log.atDebug().withThrowable(e).log("Não foi possível determinar diretório do artefato em execução");
+            return Path.of(System.getProperty("user.dir")).toAbsolutePath();
+        }
     }
 
     private void validateExists(String fieldName, String value) {
