@@ -44,4 +44,16 @@ public class Vocabulary {
 
     @Column(name = "last_seen_at", nullable = false)
     private LocalDateTime lastSeenAt;
+
+    @PreUpdate
+    private void preUpdate() {
+        lastSeenAt = LocalDateTime.now();
+    }
+
+    @PrePersist
+    private void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        firstSeenAt = now;
+        lastSeenAt = now;
+    }
 }

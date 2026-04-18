@@ -18,10 +18,11 @@ import java.util.Objects;
 @ConfigurationProperties(prefix = "lemma.filter")
 public class LemmaFilterConfig {
 
-    private double globalFrequencyWeight = 0.6;
-    private double personalFrequencyWeight = 0.4;
+    private double globalFrequencyWeight = 0.4;
+    private double personalFrequencyWeight = 0.6;
     private int globalFrequencyCutoffRank = 1500;
-    private double minimumScore = 0.35;
+    private double minimumScoreThreshold = 0.3;   
+    private int decayThreshold = 20;
     private String subtitlesFrequencyFile = "subtitles_frequency.txt";
     private Map<String, Integer> subtitlesRankMap = new HashMap<>();
 
