@@ -22,6 +22,7 @@ src/main/resources/application.properties
 docker-compose.yml
 src/main/resources/subtitles_frequency.txt
 src/test/
+dev.ps1
 
 ### IntelliJ IDEA ###
 .idea

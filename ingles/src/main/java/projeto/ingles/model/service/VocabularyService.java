@@ -3,6 +3,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import projeto.ingles.model.dto.FilterLemmaResponse;
+import projeto.ingles.model.entities.Result;
 import projeto.ingles.model.entities.Vocabulary;
 import projeto.ingles.repository.VocabularyRepository;
 import java.util.List;
@@ -12,25 +13,16 @@ import java.util.List;
 public class VocabularyService {
 
     private final VocabularyRepository repository;
+    private final FrequencyLemmaFilter lemmaFilter;
 
-    public VocabularyService(VocabularyRepository repository) {
+    public VocabularyService(VocabularyRepository repository, FrequencyLemmaFilter lemmaFilter) {
         this.repository = repository;
+        this.lemmaFilter = lemmaFilter;
     }
 
     @Transactional
-    public void saveAll(Long userId, FilterLemmaResponse filtered) {
-        log.atInfo().log("Salvando {} lemmas para usuário {}", filtered.scoredLemmas().size(), userId);
-        long start = System.currentTimeMillis();    
-
-        filtered.scoredLemmas().forEach(scored ->
-            repository.upsert(
-                userId,
-                scored.getLemma(),
-                scored.getType().name(),
-                scored.getFinalScore()
-            )
-        );
-
+    public void saveAll(Long userId, FilterLemmaResponse filtered, List<Result> results) {
+        long start = System.currentTimeMillis();
         long end = System.currentTimeMillis();
         log.atInfo().log("Vocabulário persistido em {} ms", end - start);
     }
