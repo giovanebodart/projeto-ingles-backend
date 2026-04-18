@@ -61,9 +61,6 @@ public class FfmpegTransformer implements Transformer {
             Thread.currentThread().interrupt();
             throw new RuntimeException("Processo de transformação foi interrompido.", e);
         }
-        finally{
-            audioFiles.removeAudio(audioFormat);
-        }
     }     
 
     private List<String> buildFfmpegComand(String filename, String audioFormat){

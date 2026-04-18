@@ -19,13 +19,14 @@ public interface VocabularyRepository extends JpaRepository<Vocabulary, Long> {
     List<Vocabulary> findByUserIdAndTypeOrderByLastScoreDesc(Long userId, ExpressionType type);
 
     Optional<Vocabulary> findByUserIdAndLemma(Long userId, String lemma);
+
     @Modifying
     @Query(value = """
         INSERT INTO vocabulary (user_id, lemma, type, occurrences, last_score, first_seen_at, last_seen_at)
         VALUES (:userId, :lemma, :type, 1, :score, NOW(), NOW())
         ON CONFLICT (user_id, lemma)
         DO UPDATE SET
-            occurrences   = vocabulary.occurrences + 1,
+            occurrences   = vocabulary.occurrences + 1, 
             last_score    = EXCLUDED.last_score,
             last_seen_at  = NOW()
         """, nativeQuery = true)

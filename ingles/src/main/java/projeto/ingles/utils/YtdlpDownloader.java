@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.springframework.stereotype.Component;
 import lombok.extern.log4j.Log4j2;
-import projeto.ingles.config.AudioStorageConfig;
+import projeto.ingles.config.StorageConfig;
 import projeto.ingles.config.ProcessConfig;
 import projeto.ingles.model.interfaces.Downloader;
 
@@ -17,9 +17,9 @@ public class YtdlpDownloader implements Downloader {
 
     private final BufferCleaner bufferCleaner;
     private final ComandBuilder comandBuilder;
-    private final AudioStorageConfig audioStorageConfig;
+    private final StorageConfig audioStorageConfig;
 
-    public YtdlpDownloader(BufferCleaner bufferCleaner, ComandBuilder comandBuilder, AudioStorageConfig audioStorageConfig) {
+    public YtdlpDownloader(BufferCleaner bufferCleaner, ComandBuilder comandBuilder, StorageConfig audioStorageConfig) {
         this.bufferCleaner = bufferCleaner;
         this.comandBuilder = comandBuilder;
         this.audioStorageConfig = audioStorageConfig;

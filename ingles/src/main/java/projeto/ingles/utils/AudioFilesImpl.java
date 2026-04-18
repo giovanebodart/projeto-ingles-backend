@@ -7,16 +7,16 @@ import java.util.stream.Stream;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.log4j.Log4j2;
-import projeto.ingles.config.AudioStorageConfig;
+import projeto.ingles.config.StorageConfig;
 import projeto.ingles.model.interfaces.AudioFilesUtilities;
 
 @Component
 @Log4j2
 public class AudioFilesImpl implements AudioFilesUtilities{
 
-    private final AudioStorageConfig audioStorageConfig;
+    private final StorageConfig audioStorageConfig;
 
-    public AudioFilesImpl(AudioStorageConfig audioStorageConfig) {
+    public AudioFilesImpl(StorageConfig audioStorageConfig) {
         this.audioStorageConfig = audioStorageConfig;
     }
     

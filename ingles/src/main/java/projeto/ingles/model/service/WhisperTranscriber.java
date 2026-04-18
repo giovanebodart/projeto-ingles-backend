@@ -94,9 +94,6 @@ public class WhisperTranscriber implements Transcriber{
         }catch (Exception e) {
             log.error("Erro durante a transcriçao: {}", e.getMessage(), e);
             throw new RuntimeException("Erro durante a transcriçao: " + e.getMessage(), e);
-        }finally{
-            textFilesImpl.deleteFileIfExists(outputText);
-            audioFilesUtilities.removeAudio(audioFormat);
         }
     }
 

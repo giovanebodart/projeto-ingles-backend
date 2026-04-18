@@ -9,7 +9,7 @@ import lombok.extern.log4j.Log4j2;
 @Getter
 @Log4j2
 @Configuration
-public class AudioStorageConfig {
+public class StorageConfig {
 
     @Value("${audio.storage.path}")
     private String audioStoragePath;
