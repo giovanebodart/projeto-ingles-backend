@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import projeto.ingles.model.dto.FilterLemmaResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -13,14 +14,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class Controller {
 
     private final TranscribeProcessController transcribeProcess;
+    private final AnalyzerProcessController analyzerProcess;
     
-    public Controller(TranscribeProcessController transcribeProcess) {
+    public Controller(TranscribeProcessController transcribeProcess, AnalyzerProcessController analyzerProcess) {
         this.transcribeProcess = transcribeProcess;
+        this.analyzerProcess = analyzerProcess;
     } 
 
     @PostMapping("/transcribe")     
-    public ResponseEntity<FilterLemmaResponse> transcribeVideo(@RequestParam String url) { 
-        return ResponseEntity.status(HttpStatus.OK).body(transcribeProcess.execute(url)); 
-    }    
+    public ResponseEntity<String> transcribeVideo(@RequestParam String url) { 
+        transcribeProcess.execute(url);
+        return ResponseEntity.ok(null);
+    }
+    
+    @GetMapping("/analyze")
+    public ResponseEntity<FilterLemmaResponse> analyzeText() {
+        var response = analyzerProcess.execute();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
 }

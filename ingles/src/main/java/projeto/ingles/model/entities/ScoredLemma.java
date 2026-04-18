@@ -7,7 +7,7 @@ import lombok.Getter;
 public class ScoredLemma {
 
     private final String lemma;
-    private final ExpressionType type;  
+    private final ExpressionType type; 
     private final String originalText;
     private final double globalFrequencyScore;   
     private final double personalFrequencyScore;

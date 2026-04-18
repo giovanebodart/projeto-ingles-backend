@@ -36,15 +36,16 @@ public class FrequencyLemmaFilter implements LemmaFilter {
         Map<String, Vocabulary> existingVocabulary = vocabularyRepository.findByUserIdOrderByLastScoreDesc(userId)
             .stream()
             .collect(Collectors.toMap(Vocabulary::getLemma, v -> v));   
-        List<ScoredLemma> scoredLemmas = results.parallelStream()  
+        List<ScoredLemma> scoredLemmas = results.parallelStream()
             .map(result -> {
                 for(var expression : result.expressions()) {
-                    if (!isValidExpression(expression)) continue;
+                    if (!isValidLemma(expression.lemma())) continue;
                     return buildScore(
                         expression.lemma(), expression.type(), expression.text(), existingVocabulary);
                 }
+                
                 for(var token : result.tokens()) {
-                    if (!isValidToken(token)) continue;
+                    if (!isValidLemma(token.lemma())) continue;
                     return buildScore(
                         token.lemma(), token.type(), token.text(), existingVocabulary);   
                 }
@@ -58,15 +59,8 @@ public class FrequencyLemmaFilter implements LemmaFilter {
         return new FilterLemmaResponse(scoredLemmas);
     }
 
-    private boolean isValidExpression(Expression expression){
-        String lemma = expression.lemma();
+    private boolean isValidLemma(String lemma){
         if (lemma == null || lemma.isBlank()) return false; 
-        return true;
-    }
-
-    private boolean isValidToken(Token token){
-        String lemma = token.lemma().toLowerCase().trim();
-        if (lemma == null || lemma.isBlank()) return false;
         return true;
     }
 
@@ -76,11 +70,11 @@ public class FrequencyLemmaFilter implements LemmaFilter {
 
         int personalOccurrences = vocab != null ? vocab.getOccurrences() : 0;
 
-        double personalFrequencyScore = (personalOccurrences == 0) 
+        double personalFrequencyScore = (personalOccurrences == 0)
             ? 1.0
             : Math.max(0.0, 1.0 - ((double) personalOccurrences / config.getDecayThreshold()));
 
-        double globalFrequencyScore = 1.0 - ((double) config.getRank(lemma) / config.getGlobalFrequencyCutoffRank());
+        double globalFrequencyScore = Math.max(0.0, 1.0 - ((double) config.getRank(lemma) / config.getGlobalFrequencyCutoffRank()));
 
         double finalScore = (globalFrequencyScore * config.getGlobalFrequencyWeight())
             + (personalFrequencyScore * config.getPersonalFrequencyWeight());
