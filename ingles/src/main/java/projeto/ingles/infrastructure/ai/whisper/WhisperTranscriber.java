@@ -9,23 +9,23 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.stereotype.Service;
 import lombok.extern.log4j.Log4j2;
 import projeto.ingles.infrastructure.process.ProcessConfig;
-import projeto.ingles.infrastructure.audio.AudioFilesImpl;
+import projeto.ingles.infrastructure.storage.AudioFilesManager;
 import projeto.ingles.infrastructure.process.BufferCleaner;
 import projeto.ingles.infrastructure.process.ComandBuilder;
-import projeto.ingles.infrastructure.files.TextFilesImpl;
+import projeto.ingles.infrastructure.storage.TextFilesManager;
 
 @Service
 @Log4j2
 public class WhisperTranscriber{
     
-    private final TextFilesImpl textFilesImpl;
+    private final TextFilesManager textFilesImpl;
     private final WhisperConfig whisperConfig;
     private final BufferCleaner bufferCleaner;
     private final ComandBuilder comandBuilder;
-    private final AudioFilesImpl audioFilesImpl;
+    private final AudioFilesManager audioFilesImpl;
 
     public WhisperTranscriber(WhisperConfig whisperConfig, BufferCleaner bufferCleaner, ComandBuilder comandBuilder,
-         AudioFilesImpl audioFilesImpl, TextFilesImpl textFilesImpl) {
+         AudioFilesManager audioFilesImpl, TextFilesManager textFilesImpl) {
         this.whisperConfig = whisperConfig;
         this.bufferCleaner = bufferCleaner;
         this.comandBuilder = comandBuilder;

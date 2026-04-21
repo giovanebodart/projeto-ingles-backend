@@ -1,4 +1,4 @@
-package projeto.ingles.infrastructure.audio;
+package projeto.ingles.infrastructure.storage;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -18,11 +18,11 @@ import projeto.ingles.infrastructure.process.ProcessConfig;
 @Slf4j
 public class FfmpegTransformer{
 
-    private final AudioFilesImpl audioFiles;
+    private final AudioFilesManager audioFiles;
     private final ComandBuilder comandBuilder;
     private final BufferCleaner bufferCleaner;
 
-    public FfmpegTransformer(AudioFilesImpl audioFiles, ComandBuilder comandBuilder,BufferCleaner bufferCleaner) {
+    public FfmpegTransformer(AudioFilesManager audioFiles, ComandBuilder comandBuilder,BufferCleaner bufferCleaner) {
         this.audioFiles = audioFiles;
         this.comandBuilder = comandBuilder;
         this.bufferCleaner = bufferCleaner;

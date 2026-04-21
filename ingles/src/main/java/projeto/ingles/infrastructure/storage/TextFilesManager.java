@@ -1,4 +1,4 @@
-package projeto.ingles.infrastructure.files;
+package projeto.ingles.infrastructure.storage;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -6,13 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
-import projeto.ingles.infrastructure.config.StorageConfig;
-
 @Component
-public class TextFilesImpl{
+public class TextFilesManager{
     private final StorageConfig storageConfig;
 
-    public TextFilesImpl(StorageConfig storageConfig) {
+    public TextFilesManager(StorageConfig storageConfig) {
         this.storageConfig = storageConfig;
     }
 

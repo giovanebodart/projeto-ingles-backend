@@ -1,4 +1,4 @@
-package projeto.ingles.infrastructure.audio;
+package projeto.ingles.infrastructure.storage;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -7,15 +7,14 @@ import java.util.stream.Stream;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.log4j.Log4j2;
-import projeto.ingles.infrastructure.config.StorageConfig;
 
 @Component
 @Log4j2
-public class AudioFilesImpl{
+public class AudioFilesManager{
 
     private final StorageConfig audioStorageConfig;
 
-    public AudioFilesImpl(StorageConfig audioStorageConfig) {
+    public AudioFilesManager(StorageConfig audioStorageConfig) {
         this.audioStorageConfig = audioStorageConfig;
     }
     

@@ -2,9 +2,9 @@ package projeto.ingles.api;
 import org.springframework.stereotype.Controller;
 import lombok.extern.log4j.Log4j2;
 import projeto.ingles.infrastructure.ai.whisper.WhisperTranscriber;
-import projeto.ingles.infrastructure.audio.AudioFilesImpl;
-import projeto.ingles.infrastructure.audio.FfmpegTransformer;
-import projeto.ingles.infrastructure.audio.YtdlpDownloader;
+import projeto.ingles.infrastructure.storage.AudioFilesManager;
+import projeto.ingles.infrastructure.storage.FfmpegTransformer;
+import projeto.ingles.infrastructure.storage.YtdlpDownloader;
 
 @Controller
 @Log4j2
@@ -14,10 +14,10 @@ public class TranscribeProcessController {
     private final YtdlpDownloader downloader;
     private final FfmpegTransformer transformer;
     private final WhisperTranscriber transcriber;
-    private final AudioFilesImpl audioFiles;
+    private final AudioFilesManager audioFiles;
     
     public TranscribeProcessController(YtdlpDownloader downloader, WhisperTranscriber transcriber, FfmpegTransformer transformer, 
-        AudioFilesImpl audioFiles) {
+        AudioFilesManager audioFiles) {
         this.downloader = downloader;
         this.transcriber = transcriber;
         this.transformer = transformer;

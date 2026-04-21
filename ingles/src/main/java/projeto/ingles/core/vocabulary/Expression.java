@@ -1,5 +1,12 @@
 package projeto.ingles.core.vocabulary;
 import java.util.List;
 
-public record Expression(ExpressionType type, String text, String lemma, Integer start, Integer end, List<Integer> tokens) {
+import projeto.ingles.core.nlp.Interval;
+
+public record Expression(
+    UniversalWordType type, 
+    String originalText, 
+    String lemma,
+    Interval interval,  
+    List<Integer> tokens) {
 }

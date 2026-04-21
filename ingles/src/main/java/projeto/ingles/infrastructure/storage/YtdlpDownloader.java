@@ -1,4 +1,4 @@
-package projeto.ingles.infrastructure.audio;
+package projeto.ingles.infrastructure.storage;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.springframework.stereotype.Component;
 import lombok.extern.log4j.Log4j2;
-import projeto.ingles.infrastructure.config.StorageConfig;
 import projeto.ingles.infrastructure.process.BufferCleaner;
 import projeto.ingles.infrastructure.process.ComandBuilder;
 import projeto.ingles.infrastructure.process.ProcessConfig;
