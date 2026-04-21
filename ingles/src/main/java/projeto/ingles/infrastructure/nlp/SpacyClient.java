@@ -6,11 +6,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import projeto.ingles.core.nlp.*;
 
 @Component
-public class NlpClient {
+public class SpacyClient {
 
     private final WebClient webClient;
 
-    public NlpClient(WebClient.Builder builder) {
+    public SpacyClient(WebClient.Builder builder) {
         this.webClient = builder
                 .baseUrl("http://localhost:8000")
                 .build();

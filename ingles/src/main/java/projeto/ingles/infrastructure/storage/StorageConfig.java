@@ -1,4 +1,4 @@
-package projeto.ingles.infrastructure.config;
+package projeto.ingles.infrastructure.storage;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.springframework.beans.factory.annotation.Value;

@@ -68,5 +68,30 @@
     "name": "lemma.filter.decay",
     "type": "java.lang.String",
     "description": "A description for 'lemma.filter.decay'"
+  },
+  {
+    "name": "score.weight.global.frequency",
+    "type": "java.lang.String",
+    "description": "A description for 'score.weight.global.frequency'"
+  },
+  {
+    "name": "score.weight.personal.frequency",
+    "type": "java.lang.String",
+    "description": "A description for 'score.weight.personal.frequency'"
+  },
+  {
+    "name": "score.weight.global.cutoff",
+    "type": "java.lang.String",
+    "description": "A description for 'score.weight.global.cutoff'"
+  },
+  {
+    "name": "score.weight.minimum.score",
+    "type": "java.lang.String",
+    "description": "A description for 'score.weight.minimum.score'"
+  },
+  {
+    "name": "score.weight.decay",
+    "type": "java.lang.String",
+    "description": "A description for 'score.weight.decay'"
   }
 ]}

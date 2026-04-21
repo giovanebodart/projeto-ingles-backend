@@ -3,6 +3,7 @@ package projeto.ingles.api;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import projeto.ingles.core.nlp.Language;
 import projeto.ingles.core.score.FilterLemmaResponse;
 
 import org.springframework.http.HttpStatus;
@@ -30,8 +31,8 @@ public class Controller {
     }
     
     @GetMapping("/analyze")
-    public ResponseEntity<FilterLemmaResponse> analyzeText() {
-        var response = analyzerProcess.execute();
+    public ResponseEntity<FilterLemmaResponse> analyzeText(@RequestParam Language language) {
+        var response = analyzerProcess.execute(language);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
