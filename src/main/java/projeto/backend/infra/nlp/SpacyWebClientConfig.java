@@ -7,11 +7,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
-
+import org.springframework.beans.factory.annotation.Value;
 import reactor.netty.http.client.HttpClient;
 
 @Configuration
 public class SpacyWebClientConfig {
+
+    @Value("${spacy.uri}")
+    private String spacyUri;
 
     @Bean
     WebClient spacyWebClient() {
@@ -27,10 +30,11 @@ public class SpacyWebClientConfig {
         HttpClient httpClient = HttpClient.create()
             .responseTimeout(Duration.ofMinutes(5));
         
+
         return WebClient.builder()
             .clientConnector(new ReactorClientHttpConnector(httpClient))
             .exchangeStrategies(strategies)
-            .baseUrl("http://localhost:8000/transcribe")
+            .baseUrl(spacyUri)
             .build();
     }
 }

@@ -7,8 +7,7 @@ import projeto.backend.language.english.EnglishWordTypeMapping;
 
 public class WordTypeMappingRegistry {
 
-    private static final Map<String, WordTypeMapping> REGISTRY = new HashMap<>();
-
+    private static final Map<String, WordTypeMapping> REGISTRY = new HashMap<>(); 
     static {
         REGISTRY.put("EN", new EnglishWordTypeMapping());
         // REGISTRY.put("ES", new SpanishWordTypeMapping());

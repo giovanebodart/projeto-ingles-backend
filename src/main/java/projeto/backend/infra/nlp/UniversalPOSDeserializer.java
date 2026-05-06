@@ -7,8 +7,9 @@ import projeto.backend.core.nlp.UniversalPOS;
 
 import java.io.IOException;
 
-public class UniversalPOSDeserializer extends StdDeserializer<UniversalPOS> {
 
+public class UniversalPOSDeserializer extends StdDeserializer<UniversalPOS> {
+    
     public UniversalPOSDeserializer() {
         super(UniversalPOS.class);
     }
@@ -18,13 +19,13 @@ public class UniversalPOSDeserializer extends StdDeserializer<UniversalPOS> {
         String value = p.getText();
 
         if (value == null || value.isBlank()) {
-            return null;
+            return UniversalPOS.X;
         }
 
         try {
             return UniversalPOS.valueOf(value.trim().toUpperCase());
         } catch (IllegalArgumentException e) {
-            return null; // POS vindo do spaCy não mapeado — ignora sem quebrar
+            return UniversalPOS.X; 
         }
     }
 }

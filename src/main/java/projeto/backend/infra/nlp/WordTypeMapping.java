@@ -8,7 +8,7 @@ public interface WordTypeMapping {
     Map<String, UniversalWordType> mappings();
 
     default UniversalWordType resolve(String rawType) {
-        if (rawType == null || rawType.isBlank()) return null;
+        if (rawType == null || rawType.isBlank()) return UniversalWordType.UNKNOWN;
 
         // 1. Tenta o mapeamento específico do idioma
         UniversalWordType mapped = mappings().get(rawType.trim().toUpperCase());
@@ -18,7 +18,7 @@ public interface WordTypeMapping {
         try {
             return UniversalWordType.valueOf(rawType.trim().toUpperCase());
         } catch (IllegalArgumentException e) {
-            return null;
+            return UniversalWordType.UNKNOWN; // Tipo desconhecido, mas reconhecido como palavra
         }
     }
 }

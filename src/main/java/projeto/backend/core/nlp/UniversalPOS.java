@@ -4,10 +4,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import projeto.backend.infra.nlp.UniversalPOSDeserializer;
 
 @JsonDeserialize(using = UniversalPOSDeserializer.class)
-public enum UniversalPOS implements PartOfSpeech {
-    NOUN, VERB, ADJ, ADV, PRON, DET,
+public enum UniversalPOS{
+    NOUN, VERB, ADJ, ADV, PRON, DET, PROPN,
     ADP, NUM, AUX, CCONJ, SCONJ, PART, INTJ, PUNCT, SYM, X;
 
-    @Override
-    public String code() { return name(); }
 }

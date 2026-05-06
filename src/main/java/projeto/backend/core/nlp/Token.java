@@ -6,6 +6,6 @@ public record Token(
     UniversalWordType type,
     String originalText,
     String lemma,
-    PartOfSpeech pos,
+    UniversalPOS pos,
     Map<String, Object> features) {
 }
