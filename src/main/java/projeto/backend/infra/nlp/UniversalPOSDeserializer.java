@@ -7,7 +7,9 @@ import projeto.backend.core.nlp.UniversalPOS;
 
 import java.io.IOException;
 
+import org.springframework.stereotype.Component;
 
+@Component
 public class UniversalPOSDeserializer extends StdDeserializer<UniversalPOS> {
     
     public UniversalPOSDeserializer() {

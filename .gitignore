@@ -4,7 +4,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 src/main/resources/db/migration/
+src/main/java/projeto/backend/language/english/stop_words.txt
 src/main/resources/application.properties
+src/main/resources/application-dev.yml
+src/main/resources/application-prod.yml
 src/main/resources/logback-spring.xml
 src/main/resources/META-INF
 src/test/
@@ -18,6 +21,7 @@ NEXT_STEPS.md
 .springBeans
 .sts4-cache
 logs/
+
 
 ### IntelliJ IDEA ###
 .idea

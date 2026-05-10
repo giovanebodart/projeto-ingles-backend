@@ -1,5 +1,4 @@
 package projeto.backend.core.nlp;
-
 import java.util.Map;
 
 public record Token(
