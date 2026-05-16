@@ -1,4 +1,4 @@
-package projeto.backend.api;
+package projeto.backend.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -6,22 +6,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import projeto.backend.app.nlp.TranscribeUseCase;
 import projeto.backend.core.nlp.NlpServiceRequest;
 import projeto.backend.core.nlp.NlpServiceResponse;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 @RestController
 @RequestMapping("/api")
 public class Controller {
 
-    private final TranscribeUseCase transcribeUseCase;
+    private final TranscribeController transcribeController;
+    private final TestController testController;
 
-    public Controller(TranscribeUseCase transcribeUseCase) {
-        this.transcribeUseCase = transcribeUseCase;
+    public Controller(TranscribeController transcribeController, TestController testController) {
+        this.transcribeController = transcribeController;
+        this.testController = testController;
     }
     
     @PostMapping("/transcribe")
     public ResponseEntity<NlpServiceResponse> transcribeAudio(@RequestBody NlpServiceRequest request) {
-        return ResponseEntity.ok(transcribeUseCase.transcribe(request));
+        return ResponseEntity.ok(transcribeController.transcribe(request));
     }
+
+    @GetMapping("/test")
+    public void test() {
+        testController.test();
+    }
+    
 }

@@ -1,4 +1,4 @@
-package projeto.backend.infra.nlp;
+package projeto.backend.services;
 
 import java.time.Duration;
 

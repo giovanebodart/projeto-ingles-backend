@@ -1,7 +1,8 @@
 package projeto.backend.core.nlp;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import projeto.backend.infra.nlp.UniversalPOSDeserializer;
+
+import projeto.backend.services.UniversalPOSDeserializer;
 
 @JsonDeserialize(using = UniversalPOSDeserializer.class)
 public enum UniversalPOS{

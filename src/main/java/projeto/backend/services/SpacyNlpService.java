@@ -1,4 +1,6 @@
-package projeto.backend.infra.nlp;
+package projeto.backend.services;
+import java.util.logging.Logger;
+
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import projeto.backend.core.nlp.NlpServiceRequest;
@@ -7,6 +9,7 @@ import projeto.backend.core.nlp.NlpServiceResponse;
 @Service
 public class SpacyNlpService{
 
+    private static final Logger log = Logger.getLogger(SpacyNlpService.class.getName());
     private final SpacyWebClientConfig webClientConfig;
 
     public SpacyNlpService(SpacyWebClientConfig webClientConfig) {
@@ -15,7 +18,7 @@ public class SpacyNlpService{
     
     public NlpServiceResponse processText(NlpServiceRequest request) {
         var webClient = webClientConfig.spacyWebClient();
-        System.out.println("Sending request to Spacy NLP Service: " + request.toString());
+        log.info("Sending request to Spacy NLP Service: " + request.toString());
         return webClient.post()
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(request)

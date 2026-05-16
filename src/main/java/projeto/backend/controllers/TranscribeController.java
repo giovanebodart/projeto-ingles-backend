@@ -1,15 +1,16 @@
-package projeto.backend.app.nlp;
+package projeto.backend.controllers;
 import org.springframework.stereotype.Component;
+
 import projeto.backend.core.nlp.NlpServiceRequest;
 import projeto.backend.core.nlp.NlpServiceResponse;
-import projeto.backend.infra.nlp.SpacyNlpService;
+import projeto.backend.services.SpacyNlpService;
 
 @Component
-public class TranscribeUseCase {
+public class TranscribeController {
 
     private final SpacyNlpService nlpService;
 
-    public TranscribeUseCase(SpacyNlpService nlpService) {
+    public TranscribeController(SpacyNlpService nlpService) {
         this.nlpService = nlpService;
     }
 

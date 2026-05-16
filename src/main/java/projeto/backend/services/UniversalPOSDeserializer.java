@@ -1,14 +1,12 @@
-package projeto.backend.infra.nlp;
-
+package projeto.backend.services;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+
 import projeto.backend.core.nlp.UniversalPOS;
 
 import java.io.IOException;
-
 import org.springframework.stereotype.Component;
-
 @Component
 public class UniversalPOSDeserializer extends StdDeserializer<UniversalPOS> {
     
