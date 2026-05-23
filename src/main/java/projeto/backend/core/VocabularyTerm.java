@@ -1,8 +1,6 @@
-package projeto.backend.core.vocabulary;
-import projeto.backend.core.nlp.CerfLevel;
-import projeto.backend.core.nlp.Language;
-import projeto.backend.core.nlp.UniversalWordType;
+package projeto.backend.core;
 import jakarta.persistence.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,21 +35,22 @@ public class VocabularyTerm {
     @Column(name = "type", nullable = false)
     private UniversalWordType type;
 
-    @Column(name = "pos", nullable = false)
-    private String pos;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "pos")
+    private UniversalPOS pos;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "language", nullable = false)
     private Language language;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "cerf_level", nullable = false)
-    private CerfLevel cerfLevel;
+    @Column(name = "cefr_level", nullable = false)
+    private CefrLevel cefrLevel;
 
     @Column(name = "frequency_score", nullable = false)
     private double frequencyScore;
 
-    @Column(name = "expression_score", nullable = false)
+    @Column(name = "expression_score")
     private double expressionScore;
 
     @ElementCollection(fetch = FetchType.LAZY)

@@ -3,7 +3,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
-import projeto.backend.core.nlp.UniversalPOS;
+import projeto.backend.core.UniversalPOS;
 
 import java.io.IOException;
 import org.springframework.stereotype.Component;

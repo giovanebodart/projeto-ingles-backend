@@ -1,9 +1,10 @@
-package projeto.backend.core.nlp;
+package projeto.backend.core;
 import java.util.List;
 
 public record Expression(
     UniversalWordType type, 
     String originalText, 
-    String lemma, 
+    String lemma,
+    double zipfFrequency, 
     List<Integer> tokens) {
 }

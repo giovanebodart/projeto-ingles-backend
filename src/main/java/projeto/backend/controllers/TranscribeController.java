@@ -1,8 +1,8 @@
 package projeto.backend.controllers;
 import org.springframework.stereotype.Component;
 
-import projeto.backend.core.nlp.NlpServiceRequest;
-import projeto.backend.core.nlp.NlpServiceResponse;
+import projeto.backend.core.NlpServiceRequest;
+import projeto.backend.core.NlpServiceResponse;
 import projeto.backend.services.SpacyNlpService;
 
 @Component

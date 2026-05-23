@@ -1,7 +1,5 @@
-package projeto.backend.core.nlp;
-
+package projeto.backend.core;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 import projeto.backend.services.UniversalPOSDeserializer;
 
 @JsonDeserialize(using = UniversalPOSDeserializer.class)

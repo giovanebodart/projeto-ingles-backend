@@ -1,4 +1,4 @@
-package projeto.backend.core.nlp;
+package projeto.backend.core;
 import java.util.Map;
 
 public record Token(
@@ -6,5 +6,6 @@ public record Token(
     String originalText,
     String lemma,
     UniversalPOS pos,
-    Map<String, Object> features) {
+    double zipfFrequency,
+    Map<String, String> features) {
 }

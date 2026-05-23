@@ -3,8 +3,9 @@ import java.util.logging.Logger;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import projeto.backend.core.nlp.NlpServiceRequest;
-import projeto.backend.core.nlp.NlpServiceResponse;
+
+import projeto.backend.core.NlpServiceRequest;
+import projeto.backend.core.NlpServiceResponse;
 
 @Service
 public class SpacyNlpService{

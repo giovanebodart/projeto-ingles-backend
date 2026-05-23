@@ -1,4 +1,4 @@
-package projeto.backend.core.vocabulary;
+package projeto.backend.core;
 
 public enum VocabularyStatus {
     NEW,

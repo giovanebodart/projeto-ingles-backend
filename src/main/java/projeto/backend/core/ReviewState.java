@@ -1,34 +1,27 @@
-package projeto.backend.core.vocabulary;
+package projeto.backend.core;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "review_history")
-public class ReviewHistory {
+@Table(name = "review_states")
+public class ReviewState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_vocabulary_id", nullable = false)
     private UserVocabulary userVocabulary;
-
     @Column(nullable = false)
-    private int quality;
-
+    private int repetitions;
     @Column(nullable = false)
-    private int previousInterval;
-
+    private int intervalDays;
     @Column(nullable = false)
-    private int newInterval;
-
+    private int reviewCount;
     @Column(nullable = false)
-    private double previousEasinessFactor;
-
+    private double easinessFactor;
+    @Column(nullable = true)
+    private int lastReviewQuality;
     @Column(nullable = false)
-    private double newEasinessFactor;
-
-    @Column(nullable = false)
-    private LocalDateTime reviewedAt;
+    private LocalDateTime nextReviewAt;
 }

@@ -1,4 +1,4 @@
-package projeto.backend.core.nlp;
+package projeto.backend.core;
 
 import java.util.List;
 

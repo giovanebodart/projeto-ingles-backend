@@ -1,82 +1,59 @@
-package projeto.backend.core.nlp;
+package projeto.backend.services;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
+import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 
-import projeto.backend.BackendApplication;
-import projeto.backend.services.CerfLoader;
-import projeto.backend.services.CerfService;
-import projeto.backend.services.StopWordLoader;
+import projeto.backend.core.CefrLevel;
+import projeto.backend.core.Expression;
+import projeto.backend.core.Language;
+import projeto.backend.core.NlpResult;
+import projeto.backend.core.NlpServiceResponse;
+import projeto.backend.core.Token;
+import projeto.backend.core.VocabularyTermRequest;
 
 @Service
 public class ScoreService {
-    
-    private final CerfLoader cerfLoader;
-    private final CerfService cerfService;
-    private final StopWordLoader stopWordLoader;
 
-    public ScoreService(CerfService cerfService, StopWordLoader stopWordLoader, CerfLoader cerfLoader) {
-        this.cerfService = cerfService;
-        this.stopWordLoader = stopWordLoader;
-        this.cerfLoader = cerfLoader;
+    private static final Logger log = Logger.getLogger(ScoreService.class.getName());
+    private final CefrHeuristicEstimator cefrHeuristicEstimator;
+
+    public ScoreService(CefrHeuristicEstimator cefrHeuristicEstimator) {
+        this.cefrHeuristicEstimator = cefrHeuristicEstimator;
     }
 
-    public void calculateFinalScore(NlpServiceResponse response) {
-        List<?> object = new ArrayList<>();
-        double cerfScore = 0.0;
-        double frequencyScore = 0.0;
+    public List<VocabularyTermRequest> calculateFinalScore(NlpServiceResponse response) {
+        List<VocabularyTermRequest> list = new ArrayList<>();
         for (NlpResult result : response.results()) {
             for (Token token : result.tokens()) {
-                cerfScore = calculateCefrScore(CerfLevel.B1, token);
-                frequencyScore = calculateFrequencyScore(token);
+                if(token.lemma() == null) continue;
+                CefrLevel cefrLevel = cefrHeuristicEstimator.estimate(token.lemma());
+                list.add(new VocabularyTermRequest(
+                    token.originalText(),
+                    token.lemma().toLowerCase(),
+                    token.type(),
+                    token.pos(),
+                    response.language(),
+                    cefrLevel,
+                    token.zipfFrequency(),
+                    token.features()));
             }
+
             for (Expression exp : result.expressions()) {
                 if(exp.lemma() == null) continue;
-                cerfScore = 100;
-                frequencyScore = 100;
+                CefrLevel cefrLevel = cefrHeuristicEstimator.estimate(exp.lemma());
+                list.add(new VocabularyTermRequest(
+                    exp.originalText(),
+                    exp.lemma().toLowerCase(),
+                    exp.type(),
+                    null,
+                    response.language(),
+                    cefrLevel,
+                    exp.zipfFrequency(),
+                    null));
             }
         }
-    }
-
-    private double calculateCefrScore(CerfLevel userLevel, Token token) {
-        CerfLevel level = cerfService.findLevel(token.lemma());
-        int distance = Math.abs(userLevel.ordinal() - level.ordinal());
-        double score = 0.0;
-        switch (distance) {
-            case -6 -> score = 1;
-            case -5 -> score = 1;
-            case -4 -> score = 1;
-            case -3 -> score = 5; 
-            case -2 -> score = 10;
-            case -1 -> score = 50;
-            case 0 -> score = 80;
-            case 1 -> score = 100;
-            case 2 -> score = 70;
-            case 3 -> score = 20;
-            case 4 -> score = 10;
-            case 5 -> score = 5;
-            case 6 -> score = 1;
-            default -> score = 10;
-        }
-        return score;
-    }
-
-    private double calculateFrequencyScore(Token token){
-        var stopWords = stopWordLoader.load(Language.EN, CerfLevel.B1);
-        int rank = stopWords.getRanks().getOrDefault(token.lemma(), -1);
-        int skip = stopWords.getSkip();
-        if(rank == -1) return 85;
-        int adjustedRank = rank - skip;
-        if (adjustedRank <= 0) return 0;
-        int maxRank = stopWords.getRanks().size();
-        double normalized = Math.log(adjustedRank) / Math.log(maxRank);
-        return normalized * 100;
-    }
-
-    private double calculateOccurrenceScore(Token token, List<?> object){
-        // Implementation for calculating occurrence score
-        return 0.0;
+        log.info("Foram processados %d tokens".formatted(list.size()));
+        return list;
     }
 }

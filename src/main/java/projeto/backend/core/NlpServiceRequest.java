@@ -1,4 +1,4 @@
-package projeto.backend.core.nlp;
+package projeto.backend.core;
 
 public record NlpServiceRequest(
     Language language,
