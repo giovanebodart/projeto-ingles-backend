@@ -58,7 +58,7 @@ public class Sm2Scheduler {
             state.userVocabulary(),
             repetitions,
             interval,
-            reviewCount, 
+            reviewCount,
             ef,
             quality,
             nextReview

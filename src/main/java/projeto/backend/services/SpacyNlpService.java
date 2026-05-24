@@ -1,9 +1,8 @@
 package projeto.backend.services;
 import java.util.logging.Logger;
-
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-
+import projeto.backend.config.SpacyWebClientConfig;
 import projeto.backend.core.NlpServiceRequest;
 import projeto.backend.core.NlpServiceResponse;
 

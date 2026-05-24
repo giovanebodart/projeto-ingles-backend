@@ -22,11 +22,12 @@ public class ScoreService {
         this.cefrHeuristicEstimator = cefrHeuristicEstimator;
     }
 
-    public List<VocabularyTermRequest> calculateFinalScore(NlpServiceResponse response) {
+    public List<VocabularyTermRequest> createVocabularyTerms(NlpServiceResponse response) {
         List<VocabularyTermRequest> list = new ArrayList<>();
         for (NlpResult result : response.results()) {
             for (Token token : result.tokens()) {
                 if(token.lemma() == null) continue;
+                if(token.lemma().length() <= 2) continue; 
                 CefrLevel cefrLevel = cefrHeuristicEstimator.estimate(token.lemma());
                 list.add(new VocabularyTermRequest(
                     token.originalText(),
@@ -41,6 +42,7 @@ public class ScoreService {
 
             for (Expression exp : result.expressions()) {
                 if(exp.lemma() == null) continue;
+                if(exp.lemma().length() <= 2) continue;
                 CefrLevel cefrLevel = cefrHeuristicEstimator.estimate(exp.lemma());
                 list.add(new VocabularyTermRequest(
                     exp.originalText(),

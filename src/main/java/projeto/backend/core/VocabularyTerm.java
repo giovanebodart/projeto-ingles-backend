@@ -1,5 +1,9 @@
 package projeto.backend.core;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +23,10 @@ import java.util.Map;
             }
         )
     })
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class VocabularyTerm {
 
     @Id
@@ -36,7 +44,7 @@ public class VocabularyTerm {
     private UniversalWordType type;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "pos")
+    @Column(name = "pos", nullable = true)
     private UniversalPOS pos;
 
     @Enumerated(EnumType.STRING)
@@ -47,11 +55,8 @@ public class VocabularyTerm {
     @Column(name = "cefr_level", nullable = false)
     private CefrLevel cefrLevel;
 
-    @Column(name = "frequency_score", nullable = false)
-    private double frequencyScore;
-
-    @Column(name = "expression_score")
-    private double expressionScore;
+    @Column(name = "frequency", nullable = false)
+    private double frequency;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(

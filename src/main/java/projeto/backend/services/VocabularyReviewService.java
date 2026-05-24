@@ -33,11 +33,8 @@ public class VocabularyReviewService {
      * @param failedReviews número total de revisões com falha até agora
      * @return novo UserVocabularyRequest com mastery, difficulty e priority atualizados
      */
-    public UserVocabularyRequest review(
-            UserVocabularyRequest vocabulary,
-            ReviewStateRequest state,
-            int quality,
-            int failedReviews) {
+    public UserVocabularyRequest review( UserVocabularyRequest vocabulary, ReviewStateRequest state, int quality,
+        int failedReviews) {
 
         // CORRIGIDO 1: resultado do SM-2 agora é capturado e utilizado
         ReviewStateRequest updatedState = scheduler.calculate(state, quality);
@@ -48,7 +45,7 @@ public class VocabularyReviewService {
 
         // CORRIGIDO 2: record é imutável — constrói novo objeto com valores atualizados
         // Se PriorityScoreCalculator recebesse os valores diretamente:
-        double priority = priorityCalculator.calculate(mastery, difficulty, vocabulary, updatedState);                                                   vocabulary.occurrence(), updatedState);
+        double priority = priorityCalculator.calculate(mastery, difficulty, vocabulary, state);
 
         return new UserVocabularyRequest(
                 vocabulary.term(),

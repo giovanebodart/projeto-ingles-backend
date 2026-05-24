@@ -1,4 +1,4 @@
-package projeto.backend.services;
+package projeto.backend.config;
 
 import java.time.Duration;
 
@@ -17,7 +17,7 @@ public class SpacyWebClientConfig {
     private String spacyUri;
 
     @Bean
-    WebClient spacyWebClient() {
+    public WebClient spacyWebClient() {
         int maxBufferSize = 10 * 1024 * 1024; // 10MB
 
         ExchangeStrategies strategies = ExchangeStrategies.builder()
