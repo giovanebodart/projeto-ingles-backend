@@ -105,10 +105,10 @@ public class VocabularyPipelineService {
     private UserVocabularyRequest resolveUserVocabulary(VocabularyTermRequest term, long userId) {
 
         // Busca ou cria o VocabularyTerm canônico na base
-        termRepository
+        VocabularyTerm persistedTerm = termRepository
                 .findByNormalizedLemmaAndLanguageAndType(term.normalizedLemma(), term.language(), term.type())
                 .orElseGet(() -> {
-                    VocabularyTerm newTerm = new VocabularyTerm(
+                    VocabularyTerm newTerm = new VocabularyTerm(  
                             0,
                             term.lemma(),
                             term.normalizedLemma(),
@@ -123,10 +123,10 @@ public class VocabularyPipelineService {
 
         // Verifica se o usuário já tem um registro para esse termo
         return userVocabularyRepository
-                .findByUserIdAndNormalizedLemmaAndLanguage(userId, term.normalizedLemma(),term.language())
-                .map(userVocabulary -> incrementOccurrence(userVocabularyMapper.toRequest(userVocabulary)))
+                .findByUserIdAndTermId(userId, persistedTerm.getId())
+                .map(userVocabulary -> persistIncrementedOccurrence(userVocabulary))
                 .orElseGet(() -> {
-                        return userVocabularyMapper.toRequest(userVocabularyRepository.save(createNewUserVocabularyRequest(term, userId)));
+                        return createAndPersistNewUserVocabulary(persistedTerm, userId);
                 });
     }
 
@@ -134,36 +134,32 @@ public class VocabularyPipelineService {
      * Cria um UserVocabularyRequest novo para um termo que o usuário nunca viu.
      * Scores iniciam em zero — serão calculados após a primeira revisão.
      */
-    private UserVocabulary createNewUserVocabularyRequest(VocabularyTermRequest term, long userId) {
+    private UserVocabularyRequest createAndPersistNewUserVocabulary(VocabularyTerm persistedTerm, long userId) {
         LocalDateTime now = LocalDateTime.now();
-        return new UserVocabulary(
-                        0L,
-                        userId,
-                        termMapper.toEntity(term),
+        UserVocabulary newUserVocabulary = userVocabularyMapper.toEntity(
+                new UserVocabularyRequest(
+                        termMapper.toRequest(persistedTerm),
                         0.0,
                         0.0,
                         0.0,
                         1,
                         VocabularyStatus.NEW,
                         now,
-                        now
-                );
+                        now),
+                userId,
+                persistedTerm); // termo já persistido — sem risco de INSERT duplicado
+        return userVocabularyMapper.toRequest(userVocabularyRepository.save(newUserVocabulary));
     }
 
     /**
      * Incrementa o contador de ocorrências e atualiza lastSeenAt
      * para um termo que o usuário já conhece.
      */
-    private UserVocabularyRequest incrementOccurrence(UserVocabularyRequest existing) {
-        return new UserVocabularyRequest(
-                existing.term(),
-                existing.masteryScore(),
-                existing.personalizedDifficulty(),
-                existing.priorityScore(),
-                existing.occurrence() + 1,
-                existing.status(),
-                existing.firstSeenAt(),
-                LocalDateTime.now());    // lastSeenAt atualizado
+    private UserVocabularyRequest persistIncrementedOccurrence(UserVocabulary existing) {
+        existing.setOccurrence(existing.getOccurrence() + 1);
+        existing.setLastSeenAt(LocalDateTime.now());
+        UserVocabulary saved = userVocabularyRepository.save(existing);
+        return userVocabularyMapper.toRequest(saved);
     }
 
     /**

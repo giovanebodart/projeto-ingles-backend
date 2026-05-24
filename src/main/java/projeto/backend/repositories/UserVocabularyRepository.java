@@ -1,13 +1,10 @@
 package projeto.backend.repositories;
-
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import projeto.backend.core.CefrLevel;
 import projeto.backend.core.Language;
 import projeto.backend.core.UserVocabulary;
@@ -32,8 +29,6 @@ public interface UserVocabularyRepository extends JpaRepository<UserVocabulary, 
      * Retorna todos os vocabulários de um usuário para um idioma específico.
      */
     List<UserVocabulary> findByUserIdAndTermLanguage(long userId, Language language);
-
-    Optional<UserVocabulary> findByUserIdAndNormalizedLemmaAndLanguage(long userId,String normalizedLemma, Language language);
 
     /**
      * Retorna os vocabulários de um usuário com priorityScore acima de um threshold,

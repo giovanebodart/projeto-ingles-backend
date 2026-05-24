@@ -1,10 +1,7 @@
 package projeto.backend.repositories;
-
 import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
 import projeto.backend.core.Language;
 import projeto.backend.core.UniversalWordType;
 import projeto.backend.core.VocabularyTerm;
