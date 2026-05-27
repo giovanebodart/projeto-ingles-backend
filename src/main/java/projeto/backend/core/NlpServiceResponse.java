@@ -3,7 +3,8 @@ package projeto.backend.core;
 import java.util.List;
 
 public record NlpServiceResponse(
-    Language language, 
+    String url,
+    Language language,
     List<NlpResult> results) {
     
 }
