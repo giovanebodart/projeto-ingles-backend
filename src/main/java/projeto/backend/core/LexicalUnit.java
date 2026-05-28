@@ -33,13 +33,6 @@ public class LexicalUnit {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<WordForm> forms = new ArrayList<>();
-
-    @OneToMany(
-            mappedBy = "lexical_units",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
     private List<Meaning> meanings = new ArrayList<>();
 
     @OneToMany(
@@ -54,5 +47,5 @@ public class LexicalUnit {
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )
-    private Source source;
+    private List<Source> sources = new ArrayList<>();
 }

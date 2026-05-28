@@ -23,6 +23,9 @@ public class Meaning {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String definition;
 
+    @Column(name = "translation", nullable = true, columnDefinition = "TEXT")
+    private String translation;
+
     /**
      * Explicação pragmática/contextual.
      *
