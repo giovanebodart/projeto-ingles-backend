@@ -7,8 +7,8 @@ import java.util.*;
 public class LexicalUnit {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     @Column(nullable = false, length = 255, name = "lemma")
     private String canonicalForm;
@@ -29,21 +29,21 @@ public class LexicalUnit {
     private CefrLevel cefrLevel;
 
     @OneToMany(
-            mappedBy = "lexical_units",
+            mappedBy = "lexicalUnit",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
     private List<Meaning> meanings = new ArrayList<>();
 
     @OneToMany(
-            mappedBy = "lexical_units",
+            mappedBy = "lexicalUnit",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
     private List<Pronunciation> pronunciations = new ArrayList<>();
 
     @OneToMany(
-        mappedBy = "lexical_units",
+        mappedBy = "lexicalUnit",
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )

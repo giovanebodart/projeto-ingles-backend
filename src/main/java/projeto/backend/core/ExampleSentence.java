@@ -1,14 +1,13 @@
 package projeto.backend.core;
 import jakarta.persistence.*;
-import java.util.UUID;
 
 @Entity
 @Table(name = "example_sentences")
 public class ExampleSentence {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     /**
      * Frase de exemplo.

@@ -18,7 +18,6 @@ public class Source {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lexical_unit_id")
     private LexicalUnit lexicalUnit;

@@ -9,7 +9,6 @@ score.weight.personal.frequency=0.4
 score.weight.global.cutoff=3000
 score.weight.minimum.score=0.3
 score.weight.decay=20
-
 spring.application.name=backend
 spring.devtools.restart.enabled=false
 spring.datasource.driver-class-name=org.postgresql.Driver

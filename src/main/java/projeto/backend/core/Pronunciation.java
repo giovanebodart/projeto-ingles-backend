@@ -1,15 +1,13 @@
 package projeto.backend.core;
-
 import jakarta.persistence.*;
-import java.util.UUID;
 
 @Entity
 @Table(name = "pronunciations")
 public class Pronunciation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     /**
      * IPA notation.
      */
@@ -19,6 +17,7 @@ public class Pronunciation {
     /**
      * URL do áudio.
      */
+    @Column(nullable = false)
     private String audioUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
