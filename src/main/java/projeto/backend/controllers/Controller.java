@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import projeto.backend.core.NlpServiceRequest;
-import projeto.backend.core.NlpServiceResponse;
+import projeto.backend.core.dto.NlpServiceRequest;
+import projeto.backend.core.dto.NlpServiceResponse;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
